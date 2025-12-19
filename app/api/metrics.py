@@ -24,8 +24,24 @@ def list_metrics(limit: int = 100, db: Session = Depends(get_db)):
 
 
 @router.get("/summary")
-def metrics_summary(db: Session = Depends(get_db)):
-    return get_metrics_summary(db)
+def metrics_summary():
+    data = get_metrics_summary()
+
+    return {
+        "avg_response_ms": data.avg_response,
+        "p95_response_ms": data.p95_response,
+        "success_rate": (
+            data.success_count / data.total_count
+            if data.total_count else 0
+        ),
+        "anomaly_count": data.anomaly_count,
+        "total_requests": data.total_count,
+    }
+
+
+@router.get("/anomalies")
+def anomalies(limit: int = 50):
+    return get_anomalies(limit)
 
 
 @router.get("/latency")
