@@ -20,22 +20,22 @@ def run():
         metric_data = collect_metric()
 
         history = get_recent_response_times(
-            endpoint=metric_data["endpoint"]
+            endpoint=metric_data.endpoint
         )
 
         status = detect_anomaly(
             values=history,
-            current=metric_data["response_time_ms"]
+            current=metric_data.response_time_ms
         )
 
         metric = ApiMetric(
             timestamp=datetime.utcnow(),
             source="api_simulator",
-            endpoint=metric_data["endpoint"],
-            method=metric_data["method"],
-            response_time_ms=metric_data["response_time_ms"],
-            status_code=metric_data["status_code"],
-            success=metric_data["success"],
+            endpoint=metric_data.endpoint,
+            method=metric_data.method,
+            response_time_ms=metric_data.response_time_ms,
+            status_code=metric_data.status_code,
+            success=metric_data.success,
             mode=status
         )
 

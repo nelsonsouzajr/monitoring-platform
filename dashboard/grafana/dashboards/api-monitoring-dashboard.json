@@ -1,0 +1,106 @@
+{
+  "id": null,
+  "uid": "monitoring-platform",
+  "title": "Monitoring Platform",
+  "tags": ["monitoring", "api", "observability"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Latência Média Global (ms)",
+      "id": 1,
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT AVG(response_time_ms) AS avg_latency\nFROM api_metrics\nWHERE $__timeFilter(timestamp);"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "type": "gauge",
+      "title": "Taxa de Sucesso Global (%)",
+      "id": 2,
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT\n  (SUM(CASE WHEN success = true THEN 1 ELSE 0 END)::float\n   / NULLIF(COUNT(*), 0)) * 100 AS success_rate\nFROM api_metrics\nWHERE $__timeFilter(timestamp);"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 95 },
+              { "color": "green", "value": 99 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Latência Média por Endpoint",
+      "id": 3,
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "SELECT\n  $__timeGroup(timestamp, '1m') AS time,\n  endpoint,\n  AVG(response_time_ms) AS avg_latency\nFROM api_metrics\nWHERE $__timeFilter(timestamp)\nGROUP BY time, endpoint\nORDER BY time;"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Latência P95 Global",
+      "id": 4,
+      "gridPos": { "x": 0, "y": 10, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "SELECT\n  $__timeGroup(timestamp, '1m') AS time,\n  percentile_cont(0.95) WITHIN GROUP (ORDER BY response_time_ms) AS p95_latency\nFROM api_metrics\nWHERE $__timeFilter(timestamp)\nGROUP BY time\nORDER BY time;"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        }
+      }
+    }
+  ],
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  }
+}

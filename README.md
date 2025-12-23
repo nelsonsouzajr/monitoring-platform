@@ -109,7 +109,27 @@ An alert is triggered when:
 * A statistical anomaly is detected, or
 * The ML anomaly score exceeds a defined threshold
 
-Running the Project
+### Observability Dashboard (Grafana)
+
+The platform includes a Grafana-based dashboard for real-time observability of monitored APIs.
+
+The dashboard provides visibility into:
+
+* Average and P95 response latency per endpoint
+* Global response latency trends
+* Success rate of API requests
+* Automatic anomaly detection events
+* Traffic volume over time
+
+Grafana connects directly to the PostgreSQL database using analytical SQL queries, enabling production-grade observability similar to modern SRE platforms.
+
+**Access:**
+* URL: http://localhost:3000
+* User: admin
+* Password: admin
+
+
+### Running the Project
 docker-compose up --build
 
 
@@ -200,6 +220,26 @@ A plataforma segue uma arquitetura orientada a pipeline:
 * **Banco de Dados:** PostgreSQL
 * **Machine Learning:** Scikit-learn
 * **Containerização:** Docker, Docker Compose
+
+### Dashboard de Observabilidade (Grafana)
+
+A plataforma inclui um dashboard baseado em Grafana para observabilidade em tempo real das APIs monitoradas.
+
+O dashboard oferece visibilidade sobre:
+
+* Latência média e P95 por endpoint
+* Tendência global de latência
+* Taxa de sucesso das requisições
+* Eventos de anomalia detectados automaticamente
+* Volume de tráfego ao longo do tempo
+
+O Grafana se conecta diretamente ao banco PostgreSQL utilizando consultas SQL analíticas, fornecendo uma experiência próxima a ambientes de produção e práticas de SRE.
+
+**Acesso:**
+* URL: http://localhost:3000
+* Usuário: admin
+* Senha: admin
+
 
 ### Estratégia de Testes
 
